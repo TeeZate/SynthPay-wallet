@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { analytics } from '../lib/analytics'
 
 interface User {
   user_id:    string
@@ -37,9 +38,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(token)
     localStorage.setItem('synthpay_user',       JSON.stringify(user))
     localStorage.setItem('synthpay_user_token', token)
+    analytics.identify(user.user_id, { reputation: user.reputation })
+    analytics.track('wallet_login')
   }
 
   const logout = () => {
+    analytics.track('wallet_logout')
+    analytics.reset()
     setUserState(null)
     setToken(null)
     localStorage.removeItem('synthpay_user')
