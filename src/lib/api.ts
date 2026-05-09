@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://trustledger-production.up.railway.app',
   headers: { 'Content-Type': 'application/json' }
 })
 
@@ -18,11 +18,25 @@ export const walletApi = {
   history: (user_id: string) =>
     api.get(`/users/${user_id}/history`),
 
-  createTopup: (user_id: string, amount: number) =>
-    api.post('/wallet/topup/create', { user_id, amount }),
+  // createTopup: (user_id: string, amount: number) =>
+  //   api.post('/wallet/topup/create', { user_id, amount }),
+  createTopup: (user_id: string, amount: number, idempotency_key?: string) =>
+    api.post('/wallet/topup/create', { user_id, amount, idempotency_key }),
+
+  createTopupIntent: (user_id: string, amount: number) =>
+    api.post('/wallet/topup/intent', { user_id, amount }),
 
   topupHistory: (user_id: string) =>
     api.get(`/wallet/topups/${user_id}`),
+
+  linkEmail: (user_id: string, email: string) =>
+    api.post('/auth/email/link', { user_id, email }),
+
+  requestOTP: (email: string) =>
+    api.post('/auth/email/request', { email }),
+
+  verifyOTP: (email: string, otp: string) =>
+    api.post('/auth/email/verify', { email, otp }),
 
   registerBegin: () =>
     api.post('/auth/register/begin', {}),
@@ -38,5 +52,8 @@ export const walletApi = {
     api.post('/auth/login/begin', {}),
 
   loginComplete: (credential: any) =>
-    api.post('/auth/login/complete', { credential })
-}
+      api.post('/auth/login/complete', { credential }),
+
+    pay: (data: { user_id: string; merchant_id: string; endpoint_id: string; amount: number }) =>
+      api.post('/users/pay', data)
+  }
