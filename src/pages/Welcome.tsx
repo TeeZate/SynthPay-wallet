@@ -104,18 +104,17 @@ export default function Welcome() {
       const msg = err?.response?.data?.error || err?.message || 'Login failed. Please try again.'
       setError(msg)
 
-      // On account.synthpay.tech, a "not allowed" / "timed out" error almost certainly
-      // means the user's passkey is bound to wallet.synthpay.tech — guide them to migrate.
+      // On account.synthpay.tech, virtually any login failure means the passkey was
+      // registered on wallet.synthpay.tech (wrong rpId for this domain). Show the
+      // migration prompt for every error except explicit user-cancellation.
       if (isNewDomain) {
         const lower = msg.toLowerCase()
-        if (
-          lower.includes('not allowed') ||
-          lower.includes('timed out') ||
-          lower.includes('notallowederror') ||
-          lower.includes('no credentials') ||
-          lower.includes('no passkey') ||
-          err?.name === 'NotAllowedError'
-        ) {
+        const userCancelled =
+          lower.includes('abort') ||
+          lower.includes('cancel') ||
+          lower.includes('user cancel') ||
+          err?.name === 'AbortError'
+        if (!userCancelled) {
           setShowMigrationPrompt(true)
         }
       }
