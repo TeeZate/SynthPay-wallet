@@ -1,25 +1,55 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { walletApi } from '../lib/api'
 // @ts-ignore
 import { startRegistration, startAuthentication } from '@simplewebauthn/browser'
-import { Fingerprint, KeyRound, ArrowRight, Lock, Zap, Landmark } from 'lucide-react'
+import { Fingerprint, KeyRound, ArrowRight, Lock, Zap, Landmark, ArrowUpRight, RefreshCw } from 'lucide-react'
 
-type Step = 'idle' | 'challenge' | 'biometric' | 'verifying'
+type Step = 'idle' | 'challenge' | 'biometric' | 'verifying' | 'migrating'
+
+// Domains
+const NEW_DOMAIN  = 'account.synthpay.tech'
+const OLD_DOMAIN  = 'wallet.synthpay.tech'
+const isNewDomain = typeof window !== 'undefined' && window.location.hostname === NEW_DOMAIN
+const isOldDomain = typeof window !== 'undefined' && window.location.hostname === OLD_DOMAIN
 
 export default function Welcome() {
-  const [loading, setLoading] = useState(false)
-  const [step,    setStep]    = useState<Step>('idle')
-  const [error,   setError]   = useState('')
-  const { login } = useAuth()
+  const [loading, setLoading]               = useState(false)
+  const [step,    setStep]                  = useState<Step>('idle')
+  const [error,   setError]                 = useState('')
+  const [showMigrationPrompt, setShowMigrationPrompt] = useState(false)
+  const { login, user } = useAuth() as any
   const navigate  = useNavigate()
+  const [searchParams] = useSearchParams()
+  const isMigrateMode = searchParams.get('migrate') === '1'
+
+  // If user arrives at wallet.synthpay.tech?migrate=1 already logged in → auto-redirect
+  useEffect(() => {
+    if (isMigrateMode && user && isOldDomain) {
+      handleAutoMigrate()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isMigrateMode])
 
   const statusText: Record<Step, string> = {
     idle:      '',
     challenge: 'Preparing secure challenge...',
     biometric: 'Waiting for Face ID / fingerprint...',
     verifying: 'Verifying with server...',
+    migrating: 'Preparing migration link...',
+  }
+
+  // Already logged in on wallet.synthpay.tech?migrate=1 → get token and bounce
+  const handleAutoMigrate = async () => {
+    setLoading(true); setStep('migrating')
+    try {
+      const res = await walletApi.migrationToken()
+      window.location.href = `https://${NEW_DOMAIN}/migrate?token=${res.data.token}`
+    } catch {
+      setLoading(false); setStep('idle')
+      window.location.href = `https://${NEW_DOMAIN}`
+    }
   }
 
   const handleRegister = async () => {
@@ -46,7 +76,7 @@ export default function Welcome() {
   }
 
   const handleLogin = async () => {
-    setLoading(true); setError('')
+    setLoading(true); setError(''); setShowMigrationPrompt(false)
     try {
       setStep('challenge')
       const beginRes = await walletApi.loginBegin()
@@ -60,9 +90,35 @@ export default function Welcome() {
       const { user_id, balance, token } = completeRes.data
 
       login({ user_id, balance, reputation: 'new' }, token)
+
+      // If on wallet.synthpay.tech?migrate=1 — get migration token and bounce to new domain
+      if (isMigrateMode && isOldDomain) {
+        setStep('migrating')
+        const migRes = await walletApi.migrationToken()
+        window.location.href = `https://${NEW_DOMAIN}/migrate?token=${migRes.data.token}`
+        return
+      }
+
       navigate('/wallet')
     } catch (err: any) {
-      setError(err.response?.data?.error || err.message || 'Login failed. Please try again.')
+      const msg = err?.response?.data?.error || err?.message || 'Login failed. Please try again.'
+      setError(msg)
+
+      // On account.synthpay.tech, a "not allowed" / "timed out" error almost certainly
+      // means the user's passkey is bound to wallet.synthpay.tech — guide them to migrate.
+      if (isNewDomain) {
+        const lower = msg.toLowerCase()
+        if (
+          lower.includes('not allowed') ||
+          lower.includes('timed out') ||
+          lower.includes('notallowederror') ||
+          lower.includes('no credentials') ||
+          lower.includes('no passkey') ||
+          err?.name === 'NotAllowedError'
+        ) {
+          setShowMigrationPrompt(true)
+        }
+      }
     } finally {
       setLoading(false); setStep('idle')
     }
@@ -97,6 +153,25 @@ export default function Welcome() {
             <circle cx="122" cy="14" r="5" fill="#F59B00"/>
           </svg>
         </div>
+
+        {/* Migration mode banner (wallet.synthpay.tech?migrate=1) */}
+        {isMigrateMode && isOldDomain && (
+          <div style={{
+            background: 'rgba(245,155,0,0.08)', border: '1px solid rgba(245,155,0,0.25)',
+            borderRadius: 12, padding: '12px 16px', marginBottom: 24,
+            display: 'flex', alignItems: 'flex-start', gap: 10,
+          }}>
+            <RefreshCw size={16} color="#F59B00" style={{ marginTop: 2, flexShrink: 0 }} />
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#0D0C0A', margin: 0, marginBottom: 2 }}>
+                Migrating to account.synthpay.tech
+              </p>
+              <p style={{ fontSize: 12, color: '#9A958F', margin: 0, lineHeight: 1.5 }}>
+                Sign in with your passkey below to complete the migration. Your balance and history are untouched.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Headline */}
         <h1 style={{
@@ -189,6 +264,40 @@ export default function Welcome() {
             <ArrowRight size={14} />
           </button>
         </div>
+
+        {/* ── Migration prompt (appears on account.synthpay.tech after "not allowed") ── */}
+        {showMigrationPrompt && (
+          <div style={{
+            marginTop: 20,
+            background: '#FFFBF0', border: '1.5px solid rgba(245,155,0,0.35)',
+            borderRadius: 16, padding: '20px 20px',
+            animation: 'fadeUp 0.3s ease',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <RefreshCw size={16} color="#F59B00" />
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#0D0C0A', margin: 0 }}>
+                Account on wallet.synthpay.tech?
+              </p>
+            </div>
+            <p style={{ fontSize: 12, color: '#4A4845', lineHeight: 1.6, marginBottom: 16, margin: '0 0 16px' }}>
+              Your passkey is bound to the old domain. Migrate in one tap — your balance and history are safe.
+            </p>
+            <button
+              onClick={() => { window.location.href = `https://${OLD_DOMAIN}?migrate=1` }}
+              style={{
+                width: '100%', padding: '13px',
+                borderRadius: 12, border: 'none',
+                background: '#F59B00', color: '#FFFFFF',
+                fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                fontFamily: "'DM Sans', sans-serif",
+                boxShadow: '0 4px 12px rgba(245,155,0,0.25)',
+              }}>
+              Migrate from wallet.synthpay.tech
+              <ArrowUpRight size={15} />
+            </button>
+          </div>
+        )}
 
         {/* Loading state */}
         {loading && step !== 'idle' && (

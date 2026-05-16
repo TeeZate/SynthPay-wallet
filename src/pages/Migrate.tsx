@@ -121,7 +121,7 @@ export default function Migrate() {
                 Migration links are valid for 10 minutes. Go back to your account on the old domain and generate a new link.
               </p>
               <a
-                href="https://synthpay-wallet.vercel.app"
+                href="https://wallet.synthpay.tech?migrate=1"
                 style={{
                   display: 'block', padding: '13px',
                   borderRadius: 12, border: `1px solid ${T.amberBd}`,
@@ -268,7 +268,7 @@ export default function Migrate() {
                   boxShadow: '0 4px 14px rgba(245,155,0,0.3)',
                   fontFamily: "'DM Sans', sans-serif",
                 }}>
-                Open account
+                Go to my account →
               </button>
             </>
           )}
