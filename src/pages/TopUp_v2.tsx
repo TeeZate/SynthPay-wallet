@@ -54,7 +54,7 @@ export default function TopUp() {
       <div style={{ minHeight:'100vh', background:'#03030a', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px' }}>
         <div style={{ width:'100%', maxWidth:360, textAlign:'center' }}>
           <div style={{ width:88, height:88, borderRadius:'50%', background:'rgba(16,185,129,0.12)', border:'2px solid rgba(16,185,129,0.3)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 24px', fontSize:40 }}>✓</div>
-          <h2 style={{ fontSize:26, fontWeight:800, color:'#10b981', marginBottom:8 }}>Wallet Loaded</h2>
+          <h2 style={{ fontSize:26, fontWeight:800, color:'#10b981', marginBottom:8 }}>Account Loaded</h2>
           <p style={{ fontSize:14, color:'#64748b', marginBottom:20 }}>${finalAmount.toFixed(2)} added successfully</p>
           <div style={{ background:'#0f0f1a', border:'1px solid #1a1a2e', borderRadius:16, padding:'24px', marginBottom:28 }}>
             <p style={{ fontSize:11, color:'#334155', letterSpacing:3, marginBottom:10, fontFamily:'monospace' }}>NEW BALANCE</p>
@@ -62,7 +62,7 @@ export default function TopUp() {
           </div>
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
             <button onClick={() => navigate('/marketplace')} style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:'#00e5ff', color:'#03030a', fontSize:15, fontWeight:700, cursor:'pointer' }}>Browse Marketplace →</button>
-            <button onClick={() => navigate('/wallet')} style={{ width:'100%', padding:'16px', borderRadius:14, border:'1px solid #1a1a2e', background:'transparent', color:'#64748b', fontSize:14, cursor:'pointer' }}>Back to Wallet</button>
+            <button onClick={() => navigate('/wallet')} style={{ width:'100%', padding:'16px', borderRadius:14, border:'1px solid #1a1a2e', background:'transparent', color:'#64748b', fontSize:14, cursor:'pointer' }}>Back to Account</button>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function TopUp() {
       <div style={{ maxWidth:400, margin:'0 auto' }}>
         <div style={{ marginBottom:28 }}>
           <p style={{ fontSize:11, color:'#334155', letterSpacing:3, fontFamily:'monospace', marginBottom:8 }}>ADD FUNDS</p>
-          <h1 style={{ fontSize:28, fontWeight:800, color:'#e2e8f0', marginBottom:6 }}>Load your wallet</h1>
+          <h1 style={{ fontSize:28, fontWeight:800, color:'#e2e8f0', marginBottom:6 }}>Load your account</h1>
           <p style={{ fontSize:14, color:'#64748b' }}>Funds available instantly. Protected against double charges.</p>
         </div>
 

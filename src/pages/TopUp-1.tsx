@@ -52,7 +52,7 @@ export default function TopUp() {
       <button onClick={() => navigate('/wallet')}
               className="text-xs mb-8 flex items-center gap-2"
               style={{ color: '#64748b' }}>
-        ← Back to wallet
+        ← Back to account
       </button>
 
       <h1 className="text-xl font-bold text-white mb-2">Add Funds</h1>
@@ -112,7 +112,7 @@ export default function TopUp() {
         </div>
         <div className="h-px my-3" style={{ background: '#1a1a2e' }} />
         <div className="flex justify-between font-semibold">
-          <span style={{ color: '#e2e8f0' }}>Wallet credit</span>
+          <span style={{ color: '#e2e8f0' }}>Account credit</span>
           <span style={{ color: '#00e5ff', fontFamily: 'monospace' }}>
             ${finalAmount.toFixed(2)}
           </span>

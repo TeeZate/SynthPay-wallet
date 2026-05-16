@@ -110,7 +110,7 @@ export default function Welcome() {
           fontSize: 14, color: '#9A958F', textAlign: 'center',
           lineHeight: 1.6, marginBottom: 36,
         }}>
-          No password. No email required. Your wallet, secured by your face.
+          No password. No email required. Your account, secured by your face.
         </p>
 
         {/* Buttons */}
@@ -138,13 +138,13 @@ export default function Welcome() {
               fontFamily: "'DM Sans', sans-serif",
             }}>
             <Fingerprint size={18} />
-            Create wallet — Face ID
+            Create account — Face ID
           </button>
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0' }}>
             <div style={{ flex: 1, height: 1, background: '#E8E4DF' }} />
-            <span style={{ fontSize: 12, color: '#9A958F' }}>already have a wallet?</span>
+            <span style={{ fontSize: 12, color: '#9A958F' }}>already have an account?</span>
             <div style={{ flex: 1, height: 1, background: '#E8E4DF' }} />
           </div>
 

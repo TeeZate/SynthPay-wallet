@@ -59,7 +59,7 @@ export default function EmailLink() {
             Link email for cross-device access
           </p>
           <p style={{ fontSize: 12, color: '#64748b', lineHeight: 1.6 }}>
-            Created this wallet on your phone? Link an email to access it from any device without needing your original passkey.
+            Created this account on your phone? Link an email to access it from any device without needing your original passkey.
           </p>
         </div>
       </div>

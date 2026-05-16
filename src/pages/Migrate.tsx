@@ -35,7 +35,7 @@ export default function Migrate() {
     setError('')
 
     try {
-      // 1. Get registration options for wallet.synthpay.tech
+      // 1. Get registration options for account.synthpay.tech
       const beginRes = await walletApi.migrateBegin(token)
       const { options } = beginRes.data
 
@@ -118,7 +118,7 @@ export default function Migrate() {
                 Link expired or missing
               </h2>
               <p style={{ fontSize: 13, color: T.text3, lineHeight: 1.6, marginBottom: 24 }}>
-                Migration links are valid for 10 minutes. Go back to your wallet on the old domain and generate a new link.
+                Migration links are valid for 10 minutes. Go back to your account on the old domain and generate a new link.
               </p>
               <a
                 href="https://synthpay-wallet.vercel.app"
@@ -129,7 +129,7 @@ export default function Migrate() {
                   fontSize: 13, fontWeight: 600, textDecoration: 'none',
                   transition: 'all 0.2s',
                 }}>
-                Back to wallet
+                Back to account
               </a>
             </>
           )}
@@ -149,7 +149,7 @@ export default function Migrate() {
                 Set up passkey on this device
               </h2>
               <p style={{ fontSize: 13, color: T.text3, lineHeight: 1.7, marginBottom: 8 }}>
-                You're on <span style={{ color: T.amber, fontFamily: "'DM Mono', monospace", fontSize: 11 }}>wallet.synthpay.tech</span>
+                You're on <span style={{ color: T.amber, fontFamily: "'DM Mono', monospace", fontSize: 11 }}>account.synthpay.tech</span>
               </p>
               <p style={{ fontSize: 13, color: T.text3, lineHeight: 1.7, marginBottom: 28 }}>
                 Tap the button below to register Face ID or fingerprint for this domain. Your balance and history are untouched.
@@ -161,7 +161,7 @@ export default function Migrate() {
                 marginBottom: 24, textAlign: 'left',
               }}>
                 <p style={{ fontSize: 12, color: T.text2, lineHeight: 1.8 }}>
-                  Your wallet balance is safe<br />
+                  Your account balance is safe<br />
                   All transaction history preserved<br />
                   One biometric tap — done in seconds
                 </p>
@@ -247,7 +247,7 @@ export default function Migrate() {
                 Passkey registered!
               </h2>
               <p style={{ fontSize: 13, color: T.text3, lineHeight: 1.6, marginBottom: 8 }}>
-                You can now sign in at <span style={{ color: T.amber }}>wallet.synthpay.tech</span> with Face ID or fingerprint.
+                You can now sign in at <span style={{ color: T.amber }}>account.synthpay.tech</span> with Face ID or fingerprint.
               </p>
               {balance !== null && (
                 <p style={{
@@ -268,7 +268,7 @@ export default function Migrate() {
                   boxShadow: '0 4px 14px rgba(245,155,0,0.3)',
                   fontFamily: "'DM Sans', sans-serif",
                 }}>
-                Open wallet
+                Open account
               </button>
             </>
           )}

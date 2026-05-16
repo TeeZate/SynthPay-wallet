@@ -45,7 +45,7 @@ export default function Wallet() {
     try {
       const res = await walletApi.migrationToken()
       const { token } = res.data
-      window.location.href = `https://wallet.synthpay.tech/migrate?token=${token}`
+      window.location.href = `https://account.synthpay.tech/migrate?token=${token}`
     } catch {
       setMigrating(false)
     }
@@ -64,7 +64,7 @@ export default function Wallet() {
         setHistory(hist.data.transactions || [])
         setTopups(tops.data.topups || [])
       } catch (err) {
-        setError('Failed to load wallet data.')
+        setError('Failed to load account data.')
         console.error(err)
       } finally {
         setLoading(false)
@@ -180,7 +180,7 @@ export default function Wallet() {
             <Link2 size={16} color={T.amber} style={{ flexShrink: 0 }} />
             <div>
               <p style={{ fontSize: 12, fontWeight: 700, color: T.amber, marginBottom: 2 }}>
-                Set up on wallet.synthpay.tech
+                Set up on account.synthpay.tech
               </p>
               <p style={{ fontSize: 11, color: T.text3, lineHeight: 1.5 }}>
                 Register Face ID on our new domain — one tap, balance safe.

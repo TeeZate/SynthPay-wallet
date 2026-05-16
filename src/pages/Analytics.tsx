@@ -150,7 +150,7 @@ export default function Analytics() {
           <ArrowLeft size={16} />
         </button>
         <div>
-          <p style={{ fontSize: 10, color: T.text3, letterSpacing: 2, fontFamily: "'DM Mono', monospace", margin: 0 }}>WALLET ANALYTICS</p>
+          <p style={{ fontSize: 10, color: T.text3, letterSpacing: 2, fontFamily: "'DM Mono', monospace", margin: 0 }}>ACCOUNT ANALYTICS</p>
           <h1 style={{ fontSize: 16, fontWeight: 800, color: T.text1, margin: 0 }}>Your spending</h1>
         </div>
       </div>

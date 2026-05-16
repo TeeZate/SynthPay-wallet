@@ -114,14 +114,14 @@ export default function RecoveryLogin() {
               : <Mail size={28} color={T.amber} />}
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: T.text1, marginBottom: 8 }}>
-            {step === 'email'   && 'Access your wallet'}
+            {step === 'email'   && 'Access your account'}
             {step === 'otp'     && 'Enter your code'}
             {step === 'success' && 'Logged in!'}
           </h1>
           <p style={{ fontSize: 13, color: T.text3, lineHeight: 1.6 }}>
-            {step === 'email'   && "Enter the email linked to your wallet. We'll send a one-time code."}
+            {step === 'email'   && "Enter the email linked to your account. We'll send a one-time code."}
             {step === 'otp'     && `We sent a 6-digit code to ${email}. It expires in 10 minutes.`}
-            {step === 'success' && 'Redirecting to your wallet...'}
+            {step === 'success' && 'Redirecting to your account...'}
           </p>
         </div>
 
@@ -299,7 +299,7 @@ export default function RecoveryLogin() {
               <CheckCircle size={36} color={T.green} />
             </div>
             <p style={{ fontSize: 15, color: T.green, fontWeight: 600 }}>Logged in successfully</p>
-            <p style={{ fontSize: 13, color: T.text3, marginTop: 8 }}>Redirecting to your wallet...</p>
+            <p style={{ fontSize: 13, color: T.text3, marginTop: 8 }}>Redirecting to your account...</p>
           </div>
         )}
 
