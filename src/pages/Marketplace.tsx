@@ -211,7 +211,11 @@ const TEMPLATE_MOCK: Record<string, MockItem[]> = {
 }
 
 function buildCatalog(template: string, services: Service[]): ContentItem[] {
-  const fallbackId = services[0]?.endpoint_id || 'demo'
+  const fallbackId    = services[0]?.endpoint_id || 'demo'
+  // Payment must always use the real endpoint price stored in the DB.
+  // Mock items share the fallback endpoint, so they must charge that endpoint's price.
+  const fallbackPrice = services[0]?.price ?? 0.01
+
   const realItems: ContentItem[] = services.map(s => ({
     id: s.endpoint_id, title: s.service_name,
     subtitle: s.description || s.category,
@@ -221,7 +225,16 @@ function buildCatalog(template: string, services: Service[]): ContentItem[] {
     payload: TEMPLATE_MOCK[template]?.[0]?.payload || { text: s.description },
     endpointId: s.endpoint_id,
   }))
-  const mocks: ContentItem[] = (TEMPLATE_MOCK[template] || []).map(m => ({ ...m, endpointId: fallbackId }))
+
+  // Mock items: override price with the real endpoint price so payment validation passes.
+  // The displayed price is the actual charge per access — no mismatch.
+  const mocks: ContentItem[] = (TEMPLATE_MOCK[template] || []).map(m => ({
+    ...m,
+    endpointId: fallbackId,
+    price: fallbackPrice,
+    meta: m.meta.includes('$') ? m.meta : `${m.meta} · $${fallbackPrice.toFixed(4)}`,
+  }))
+
   return mocks.length > 0 ? [...mocks, ...realItems] : realItems
 }
 
