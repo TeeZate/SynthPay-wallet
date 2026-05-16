@@ -37,8 +37,10 @@ export default function Wallet() {
   const [migrating,    setMigrating]    = useState(false)
   const navigate = useNavigate()
 
-  // Show migration banner only on the old Vercel domain
-  const onOldDomain = window.location.hostname === 'synthpay-wallet.vercel.app'
+  // Show migration banner on any non-primary domain
+  const onOldDomain =
+    window.location.hostname === 'synthpay-wallet.vercel.app' ||
+    window.location.hostname === 'wallet.synthpay.tech'
 
   const handleMigrate = async () => {
     setMigrating(true)
@@ -180,10 +182,10 @@ export default function Wallet() {
             <Link2 size={16} color={T.amber} style={{ flexShrink: 0 }} />
             <div>
               <p style={{ fontSize: 12, fontWeight: 700, color: T.amber, marginBottom: 2 }}>
-                Set up on account.synthpay.tech
+                Move to account.synthpay.tech
               </p>
               <p style={{ fontSize: 11, color: T.text3, lineHeight: 1.5 }}>
-                Register Face ID on our new domain — one tap, balance safe.
+                wallet.synthpay.tech is being retired. Migrate now — one tap, your balance and history stay intact.
               </p>
             </div>
           </div>
