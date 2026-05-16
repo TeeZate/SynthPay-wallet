@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { walletApi } from '../lib/api'
 // @ts-ignore
 import { startRegistration, startAuthentication } from '@simplewebauthn/browser'
+import { Fingerprint, KeyRound, ArrowRight, Lock, Zap, Landmark } from 'lucide-react'
 
 type Step = 'idle' | 'challenge' | 'biometric' | 'verifying'
 
@@ -70,49 +71,51 @@ export default function Welcome() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#03030a',
+      background: '#FFFFFF',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '24px 20px',
+      padding: '60px 32px 48px',
+      fontFamily: "'DM Sans', system-ui, sans-serif",
     }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+      `}</style>
 
-      {/* Background glow */}
-      <div style={{
-        position: 'fixed', top: '20%', left: '50%',
-        transform: 'translateX(-50%)',
-        width: 400, height: 400,
-        background: 'radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%)',
-        pointerEvents: 'none'
-      }} />
+      <div style={{ width: '100%', maxWidth: 360, animation: 'fadeUp 0.4s ease' }}>
 
-      <div style={{ width: '100%', maxWidth: 360, position: 'relative', zIndex: 1 }}>
-
-        {/* Logo mark */}
+        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{
-            width: 72, height: 72,
-            borderRadius: 20,
-            margin: '0 auto 20px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,229,255,0.05))',
-            border: '1px solid rgba(0,229,255,0.2)',
-          }}>
-            <span style={{ fontSize: 32 }}>⚡</span>
-          </div>
-          <h1 style={{
-            fontSize: 28, fontWeight: 800,
-            color: '#e2e8f0', marginBottom: 8,
-            fontFamily: 'system-ui, sans-serif'
-          }}>SynthPay</h1>
-          <p style={{ fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>
-            Pay any API. Any price.<br />One biometric tap.
-          </p>
+          <svg viewBox="0 0 130 40" height="26" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', margin: '0 auto' }}>
+            <text x="0" y="32" fontFamily="'DM Sans', sans-serif" fontWeight="900" fontSize="36" fill="#0D0C0A">S</text>
+            <text x="24" y="34" fontFamily="'DM Sans', sans-serif" fontWeight="300" fontSize="38" fill="#F59B00">/</text>
+            <text x="44" y="30" fontFamily="'DM Sans', sans-serif" fontWeight="800" fontSize="22" fill="#0D0C0A">YNTH</text>
+            <text x="44" y="39" fontFamily="'DM Sans', sans-serif" fontWeight="400" fontSize="11" fill="#9A958F" letterSpacing="3">PAY</text>
+            <circle cx="122" cy="14" r="5" fill="#F59B00"/>
+          </svg>
         </div>
 
-        {/* Main actions */}
+        {/* Headline */}
+        <h1 style={{
+          fontSize: 26, fontWeight: 800, color: '#0D0C0A',
+          marginBottom: 12, lineHeight: 1.25, whiteSpace: 'pre-line',
+          textAlign: 'center',
+        }}>
+          {'Pay any API.\nOne biometric tap.'}
+        </h1>
+        <p style={{
+          fontSize: 14, color: '#9A958F', textAlign: 'center',
+          lineHeight: 1.6, marginBottom: 36,
+        }}>
+          No password. No email required. Your wallet, secured by your face.
+        </p>
+
+        {/* Buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* Primary */}
           <button
             onClick={handleRegister}
             disabled={loading}
@@ -121,8 +124,8 @@ export default function Welcome() {
               padding: '16px 24px',
               borderRadius: 16,
               border: 'none',
-              background: loading ? 'rgba(0,229,255,0.4)' : '#00e5ff',
-              color: '#03030a',
+              background: loading ? 'rgba(245,155,0,0.5)' : '#F59B00',
+              color: '#FFFFFF',
               fontSize: 15,
               fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
@@ -131,10 +134,21 @@ export default function Welcome() {
               justifyContent: 'center',
               gap: 10,
               transition: 'all 0.2s',
+              boxShadow: '0 4px 14px rgba(245,155,0,0.3)',
+              fontFamily: "'DM Sans', sans-serif",
             }}>
-            Create Wallet with Face ID
+            <Fingerprint size={18} />
+            Create wallet — Face ID
           </button>
 
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0' }}>
+            <div style={{ flex: 1, height: 1, background: '#E8E4DF' }} />
+            <span style={{ fontSize: 12, color: '#9A958F' }}>already have a wallet?</span>
+            <div style={{ flex: 1, height: 1, background: '#E8E4DF' }} />
+          </div>
+
+          {/* Secondary */}
           <button
             onClick={handleLogin}
             disabled={loading}
@@ -142,9 +156,9 @@ export default function Welcome() {
               width: '100%',
               padding: '16px 24px',
               borderRadius: 16,
-              border: '1px solid #1a1a2e',
-              background: 'transparent',
-              color: '#e2e8f0',
+              border: '1.5px solid #D4CFC9',
+              background: '#FFFFFF',
+              color: '#0D0C0A',
               fontSize: 15,
               fontWeight: 600,
               cursor: loading ? 'not-allowed' : 'pointer',
@@ -154,50 +168,49 @@ export default function Welcome() {
               gap: 10,
               transition: 'all 0.2s',
               opacity: loading ? 0.5 : 1,
+              fontFamily: "'DM Sans', sans-serif",
             }}>
-
-            Sign in with Passkey
+            <KeyRound size={18} />
+            Sign in with passkey
           </button>
+
+          {/* Ghost */}
           <button
             onClick={() => navigate('/recover')}
             style={{
               width: '100%', padding: '14px',
               borderRadius: 16, border: 'none',
-              background: 'transparent', color: '#334155',
+              background: 'transparent', color: '#9A958F',
               fontSize: 13, cursor: 'pointer', marginTop: 4,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              fontFamily: "'DM Sans', sans-serif",
             }}>
-            Using a different device? →
+            Using a different device?
+            <ArrowRight size={14} />
           </button>
         </div>
 
-        {/* Status indicator */}
+        {/* Loading state */}
         {loading && step !== 'idle' && (
           <div style={{
             marginTop: 24,
             padding: '14px 20px',
             borderRadius: 12,
-            background: 'rgba(0,229,255,0.06)',
-            border: '1px solid rgba(0,229,255,0.15)',
+            background: 'rgba(245,155,0,0.08)',
+            border: '1px solid rgba(245,155,0,0.2)',
             textAlign: 'center',
           }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 10,
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
               <div style={{
                 width: 16, height: 16,
                 borderRadius: '50%',
-                border: '2px solid rgba(0,229,255,0.3)',
-                borderTopColor: '#00e5ff',
+                border: '2px solid rgba(245,155,0,0.3)',
+                borderTopColor: '#F59B00',
                 animation: 'spin 0.8s linear infinite',
               }} />
               <p style={{
-                fontSize: 13,
-                color: '#00e5ff',
-                fontFamily: 'monospace',
-                letterSpacing: 1,
+                fontSize: 13, color: '#F59B00',
+                fontFamily: "'DM Mono', monospace", letterSpacing: 1,
               }}>
                 {statusText[step]}
               </p>
@@ -208,54 +221,42 @@ export default function Welcome() {
         {/* Error state */}
         {error && (
           <div style={{
-            marginTop: 16,
-            padding: '12px 16px',
+            marginTop: 16, padding: '12px 16px',
             borderRadius: 10,
-            background: 'rgba(239,68,68,0.08)',
-            border: '1px solid rgba(239,68,68,0.2)',
+            background: 'rgba(220,38,38,0.06)',
+            border: '1px solid rgba(220,38,38,0.2)',
           }}>
-            <p style={{ fontSize: 13, color: '#ef4444', textAlign: 'center', lineHeight: 1.5 }}>
+            <p style={{ fontSize: 13, color: '#DC2626', textAlign: 'center', lineHeight: 1.5 }}>
               {error}
             </p>
           </div>
         )}
 
-        {/* Trust indicators */}
+        {/* Trust row */}
         <div style={{
           marginTop: 40,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 10,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 16,
         }}>
           {[
-            ['🔒', 'No password. No email required.'],
-            ['⚡', 'Wallet created in under 4 seconds.'],
-            ['🏦', 'Funds secured by Stripe.'],
-          ].map(([icon, text]) => (
-            <div key={text} style={{
-              display: 'flex', alignItems: 'center', gap: 10,
-            }}>
-              <span style={{ fontSize: 14 }}>{icon}</span>
-              <p style={{ fontSize: 12, color: '#334155' }}>{text}</p>
+            { icon: <Lock size={16} color="#4A4845" />, label: 'No password needed' },
+            { icon: <Zap size={16} color="#4A4845" />, label: 'Created in 4 seconds' },
+            { icon: <Landmark size={16} color="#4A4845" />, label: 'Secured by Stripe' },
+          ].map(({ icon, label }) => (
+            <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: '#F3F1EE', border: '1px solid #E8E4DF',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {icon}
+              </div>
+              <p style={{ fontSize: 11, color: '#9A958F', textAlign: 'center', lineHeight: 1.4 }}>{label}</p>
             </div>
           ))}
         </div>
-
-        <p style={{
-          textAlign: 'center',
-          fontSize: 11,
-          color: '#1a1a2e',
-          marginTop: 32,
-          fontFamily: 'monospace',
-          letterSpacing: 1,
-        }}>
-          synthpay.io
-        </p>
       </div>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
     </div>
   )
 }

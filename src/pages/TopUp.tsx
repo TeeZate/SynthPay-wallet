@@ -10,23 +10,16 @@ import {
 import { useAuth } from '../contexts/AuthContext'
 import { walletApi } from '../lib/api'
 import { analytics } from '../lib/analytics'
+import { ArrowLeft, Lock, CreditCard, CheckCircle } from 'lucide-react'
 
 // ── Design tokens ──────────────────────────────────────────────────────────────
 const T = {
-  amber:       '#F0A500',
-  amberLight:  '#FFB800',
-  amberPale:   'rgba(240,165,0,0.08)',
-  amberBorder: 'rgba(240,165,0,0.18)',
-  bg:          '#0A0906',
-  surface:     '#111009',
-  surface2:    '#181610',
-  border:      '#222018',
-  text1:       '#F0EEE8',
-  text2:       '#C8C4BC',
-  text3:       '#7A7670',
-  text4:       '#3A3830',
-  green:       '#10b981',
-  red:         '#ef4444',
+  amber: '#F59B00', amberD: '#D98A00',
+  amberPale: 'rgba(245,155,0,0.08)', amberBd: 'rgba(245,155,0,0.2)',
+  bg: '#F7F5F2', surface: '#FFFFFF', surface2: '#F3F1EE',
+  border: '#E8E4DF', border2: '#D4CFC9',
+  text1: '#0D0C0A', text2: '#4A4845', text3: '#9A958F', text4: '#C4BFB9',
+  green: '#059669', greenPale: 'rgba(5,150,105,0.08)', red: '#DC2626', navy: '#111827',
 }
 
 const AMOUNTS = [5, 10, 20, 50]
@@ -57,19 +50,25 @@ function PageHeader({ label, onBack }: { label: string; onBack: () => void }) {
       padding: '14px 20px',
       borderBottom: `1px solid ${T.border}`,
       position: 'sticky', top: 0, zIndex: 50,
-      background: 'rgba(10,9,6,0.92)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
+      background: T.surface,
     }}>
       <button onClick={onBack} style={{
-        width: 34, height: 34, borderRadius: 10,
+        width: 36, height: 36, borderRadius: '50%',
         border: `1px solid ${T.border}`,
-        background: T.surface,
+        background: T.surface2,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        cursor: 'pointer', fontSize: 16, color: T.text3,
+        cursor: 'pointer', color: T.text2,
         transition: 'all 0.15s',
-      }}>←</button>
-      <span style={{ fontSize: 14, fontWeight: 700, color: T.text1 }}>{label}</span>
+      }}>
+        <ArrowLeft size={16} />
+      </button>
+      <div>
+        <span style={{ fontSize: 14, fontWeight: 700, color: T.text1 }}>{label}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
+          <Lock size={10} color={T.text3} />
+          <span style={{ fontSize: 10, color: T.text3 }}>Secured by Stripe</span>
+        </div>
+      </div>
     </div>
   )
 }
@@ -113,7 +112,7 @@ function AmountStep({ onContinue }: { onContinue: (amount: number) => void }) {
 
         {/* Current balance */}
         <div style={{
-          background: T.surface, border: `1px solid ${T.border}`,
+          background: T.surface2, border: `1px solid ${T.border}`,
           borderRadius: 14, padding: '14px 18px',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           marginBottom: 24,
@@ -139,7 +138,7 @@ function AmountStep({ onContinue }: { onContinue: (amount: number) => void }) {
                 fontSize: 16, fontWeight: 700, cursor: 'pointer',
                 transition: 'all 0.15s',
                 fontFamily: "'DM Mono', monospace",
-                boxShadow: sel ? '0 0 18px rgba(240,165,0,0.14)' : 'none',
+                boxShadow: sel ? '0 0 18px rgba(245,155,0,0.14)' : 'none',
               }}>${a}</button>
             )
           })}
@@ -158,17 +157,16 @@ function AmountStep({ onContinue }: { onContinue: (amount: number) => void }) {
             style={{
               width: '100%', padding: '16px 16px 16px 36px',
               borderRadius: 14, border: `1.5px solid ${custom ? T.amber : T.border}`,
-              background: T.surface, color: T.text1,
+              background: T.surface2, color: T.text1,
               fontSize: 16, fontFamily: "'DM Mono', monospace",
               outline: 'none', transition: 'border-color 0.2s', boxSizing: 'border-box',
-              boxShadow: custom ? '0 0 16px rgba(240,165,0,0.08)' : 'none',
             }}
           />
         </div>
 
         {/* Summary */}
         <div style={{
-          background: T.surface, border: `1px solid ${T.border}`,
+          background: T.surface2, border: `1px solid ${T.border}`,
           borderRadius: 14, overflow: 'hidden', marginBottom: 20,
         }}>
           {[
@@ -193,7 +191,7 @@ function AmountStep({ onContinue }: { onContinue: (amount: number) => void }) {
 
         {error && (
           <div style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 12,
-            background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)' }}>
+            background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.18)' }}>
             <p style={{ fontSize: 13, color: T.red }}>{error}</p>
           </div>
         )}
@@ -203,21 +201,21 @@ function AmountStep({ onContinue }: { onContinue: (amount: number) => void }) {
           style={{
             width: '100%', padding: '16px', borderRadius: 14,
             border: `1px solid ${loading || isNaN(finalAmount) || finalAmount < 1 ? T.border : 'transparent'}`,
-            background: loading || isNaN(finalAmount) || finalAmount < 1 ? T.surface : T.amber,
-            color:  loading || isNaN(finalAmount) || finalAmount < 1 ? T.text4 : '#000',
+            background: loading || isNaN(finalAmount) || finalAmount < 1 ? T.surface2 : T.amber,
+            color:  loading || isNaN(finalAmount) || finalAmount < 1 ? T.text4 : '#FFFFFF',
             cursor: loading || isNaN(finalAmount) || finalAmount < 1 ? 'not-allowed' : 'pointer',
             fontSize: 15, fontWeight: 700,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             transition: 'all 0.2s',
-            boxShadow: loading || isNaN(finalAmount) || finalAmount < 1 ? 'none' : '0 4px 20px rgba(240,165,0,0.28)',
+            boxShadow: loading || isNaN(finalAmount) || finalAmount < 1 ? 'none' : '0 4px 14px rgba(245,155,0,0.3)',
           }}>
           {loading
-            ? <><div style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(0,0,0,0.2)', borderTopColor: T.text4, animation: 'spin 0.8s linear infinite' }} />Setting up checkout...</>
-            : `Continue to payment — $${isNaN(finalAmount) ? '0.00' : finalAmount.toFixed(2)} →`}
+            ? <><div style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#FFFFFF', animation: 'spin 0.8s linear infinite' }} />Setting up checkout...</>
+            : <><CreditCard size={16} />Continue to payment — ${isNaN(finalAmount) ? '0.00' : finalAmount.toFixed(2)}</>}
         </button>
 
         <p style={{ textAlign: 'center', fontSize: 10, color: T.text4, marginTop: 14, fontFamily: "'DM Mono', monospace" }}>
-          🔒 Stripe · SSL encrypted · Idempotency guaranteed
+          Stripe · SSL encrypted · Idempotency guaranteed
         </p>
       </div>
     </div>
@@ -270,7 +268,7 @@ function CheckoutForm({ amount, onSuccess, onBack }: {
     <div style={pageStyle}>
       <style>{fonts + `
         .StripeElement { background: ${T.surface2}; border-radius: 12px; padding: 14px 16px; border: 1px solid ${T.border}; }
-        .StripeElement--focus { border-color: ${T.amber}; box-shadow: 0 0 0 3px rgba(240,165,0,0.1); }
+        .StripeElement--focus { border-color: ${T.amber}; box-shadow: 0 0 0 3px rgba(245,155,0,0.1); }
         .StripeElement--invalid { border-color: ${T.red}; }
       `}</style>
       <PageHeader label={`Pay $${amount.toFixed(2)}`} onBack={onBack} />
@@ -286,7 +284,7 @@ function CheckoutForm({ amount, onSuccess, onBack }: {
         {/* Amount chip */}
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: T.amberPale, border: `1px solid ${T.amberBorder}`,
+          background: T.amberPale, border: `1px solid ${T.amberBd}`,
           borderRadius: 10, padding: '8px 14px', marginBottom: 24,
         }}>
           <span style={{ fontSize: 11, color: T.text3, fontFamily: "'DM Mono', monospace" }}>LOADING</span>
@@ -299,13 +297,14 @@ function CheckoutForm({ amount, onSuccess, onBack }: {
           <div style={{
             background: T.surface, border: `1px solid ${T.border}`,
             borderRadius: 16, padding: 20, marginBottom: 20,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
           }}>
             <PaymentElement options={{ layout: 'tabs' }} />
           </div>
 
           {error && (
             <div style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 12,
-              background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)' }}>
+              background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.18)' }}>
               <p style={{ fontSize: 13, color: T.red }}>{error}</p>
             </div>
           )}
@@ -313,22 +312,22 @@ function CheckoutForm({ amount, onSuccess, onBack }: {
           <button type="submit" disabled={!stripe || loading} style={{
             width: '100%', padding: '16px', borderRadius: 14,
             border: `1px solid ${!stripe || loading ? T.border : 'transparent'}`,
-            background: !stripe || loading ? T.surface : T.amber,
-            color: !stripe || loading ? T.text4 : '#000',
+            background: !stripe || loading ? T.surface2 : T.amber,
+            color: !stripe || loading ? T.text4 : '#FFFFFF',
             cursor: !stripe || loading ? 'not-allowed' : 'pointer',
             fontSize: 15, fontWeight: 700,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             transition: 'all 0.2s',
-            boxShadow: !stripe || loading ? 'none' : '0 4px 20px rgba(240,165,0,0.28)',
+            boxShadow: !stripe || loading ? 'none' : '0 4px 14px rgba(245,155,0,0.3)',
           }}>
             {loading
-              ? <><div style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(0,0,0,0.2)', borderTopColor: T.text4, animation: 'spin 0.8s linear infinite' }} />Processing...</>
-              : `Pay $${amount.toFixed(2)} →`}
+              ? <><div style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#FFFFFF', animation: 'spin 0.8s linear infinite' }} />Processing...</>
+              : `Pay $${amount.toFixed(2)}`}
           </button>
         </form>
 
         <p style={{ textAlign: 'center', fontSize: 10, color: T.text4, marginTop: 14, fontFamily: "'DM Mono', monospace" }}>
-          🔒 Secured by Stripe · SSL encrypted
+          Secured by Stripe · SSL encrypted
         </p>
       </div>
     </div>
@@ -341,6 +340,7 @@ function SuccessScreen({ amount, newBalance }: { amount: number; newBalance: num
   return (
     <div style={{
       ...pageStyle,
+      background: T.surface,
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center', padding: '24px 20px',
     }}>
@@ -350,12 +350,13 @@ function SuccessScreen({ amount, newBalance }: { amount: number; newBalance: num
         {/* Check icon */}
         <div style={{
           width: 72, height: 72, borderRadius: '50%',
-          background: 'rgba(16,185,129,0.08)', border: '1.5px solid rgba(16,185,129,0.3)',
+          background: 'rgba(5,150,105,0.08)', border: '1.5px solid rgba(5,150,105,0.3)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto 20px', fontSize: 30, color: T.green,
+          margin: '0 auto 20px',
           animation: 'scaleIn 0.4s 0.1s ease both',
-          boxShadow: '0 0 32px rgba(16,185,129,0.12)',
-        }}>✓</div>
+        }}>
+          <CheckCircle size={32} color={T.green} />
+        </div>
 
         <h2 style={{ fontSize: 26, fontWeight: 900, color: T.green, marginBottom: 6, letterSpacing: -0.5 }}>
           Credits Added
@@ -366,25 +367,25 @@ function SuccessScreen({ amount, newBalance }: { amount: number; newBalance: num
 
         {/* New balance card */}
         <div style={{
-          background: 'linear-gradient(145deg, #141208, #0E0C08)',
-          border: '1px solid #1E1C14', borderRadius: 20,
+          background: T.surface,
+          border: `1px solid ${T.border}`, borderRadius: 20,
           padding: '28px 24px', marginBottom: 24,
           position: 'relative', overflow: 'hidden',
-          boxShadow: '0 16px 40px rgba(0,0,0,0.35)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
         }}>
           <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, height: 2,
+            position: 'absolute', top: 0, left: 0, right: 0, height: 3,
             background: `linear-gradient(90deg, ${T.amber}, transparent)`,
           }} />
           <p style={{
-            fontSize: 9, color: 'rgba(255,255,255,0.22)', letterSpacing: 3,
+            fontSize: 9, color: T.text3, letterSpacing: 3,
             marginBottom: 10, fontFamily: "'DM Mono', monospace", textTransform: 'uppercase',
           }}>New Balance</p>
           <p style={{
-            fontSize: 46, fontWeight: 700, color: '#fff',
+            fontSize: 46, fontWeight: 700, color: T.navy,
             fontFamily: "'DM Mono', monospace", lineHeight: 1, letterSpacing: -2,
           }}>
-            <span style={{ fontSize: 20, opacity: 0.3, verticalAlign: 'super' }}>$</span>
+            <span style={{ fontSize: 20, opacity: 0.4, verticalAlign: 'super' }}>$</span>
             {Number(newBalance).toFixed(4)}
           </p>
         </div>
@@ -392,15 +393,15 @@ function SuccessScreen({ amount, newBalance }: { amount: number; newBalance: num
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button onClick={() => navigate('/marketplace')} style={{
             width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-            background: T.amber, color: '#000',
+            background: T.amber, color: '#FFFFFF',
             fontSize: 14, fontWeight: 700, cursor: 'pointer',
             fontFamily: "'DM Sans', sans-serif",
-            boxShadow: '0 4px 16px rgba(240,165,0,0.25)',
-          }}>Browse Services →</button>
+            boxShadow: '0 4px 14px rgba(245,155,0,0.3)',
+          }}>Browse Services</button>
           <button onClick={() => navigate('/wallet')} style={{
             width: '100%', padding: '14px', borderRadius: 12,
-            border: `1px solid ${T.border}`, background: 'transparent',
-            color: T.text3, fontSize: 14, fontWeight: 600, cursor: 'pointer',
+            border: `1px solid ${T.border}`, background: T.surface2,
+            color: T.text2, fontSize: 14, fontWeight: 600, cursor: 'pointer',
             fontFamily: "'DM Sans', sans-serif",
           }}>Back to account</button>
         </div>
@@ -446,12 +447,12 @@ export default function TopUp() {
         options={{
           clientSecret,
           appearance: {
-            theme: 'night',
+            theme: 'stripe',
             variables: {
-              colorPrimary:    T.amber,
-              colorBackground: T.surface,
-              colorText:       T.text1,
-              colorDanger:     T.red,
+              colorPrimary:    '#F59B00',
+              colorBackground: '#FFFFFF',
+              colorText:       '#0D0C0A',
+              colorDanger:     '#DC2626',
               fontFamily:      "'DM Mono', monospace",
               borderRadius:    '12px',
             },

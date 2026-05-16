@@ -52,8 +52,18 @@ export const walletApi = {
     api.post('/auth/login/begin', {}),
 
   loginComplete: (credential: any) =>
-      api.post('/auth/login/complete', { credential }),
+    api.post('/auth/login/complete', { credential }),
 
-    pay: (data: { user_id: string; merchant_id: string; endpoint_id: string; amount: number }) =>
-      api.post('/users/pay', data)
-  }
+  // ── Passkey migration (old domain → wallet.synthpay.tech) ────────────────
+  migrationToken: () =>
+    api.post('/auth/migration-token', {}),
+
+  migrateBegin: (token: string) =>
+    api.post('/auth/migrate/begin', { token }),
+
+  migrateComplete: (token: string, credential: any) =>
+    api.post('/auth/migrate/complete', { token, credential }),
+
+  pay: (data: { user_id: string; merchant_id: string; endpoint_id: string; amount: number }) =>
+    api.post('/users/pay', data)
+}
