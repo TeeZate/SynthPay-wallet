@@ -6,6 +6,7 @@ import TopUp from './pages/TopUp'
 import RecoveryLogin from './pages/RecoveryLogin'
 import Marketplace from './pages/Marketplace'
 import Analytics from './pages/Analytics'
+import Migrate from './pages/Migrate'
 
 const Protected = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth()
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/marketplace" element={<Protected><Marketplace /></Protected>} />
           <Route path="/analytics"  element={<Protected><Analytics /></Protected>} />
           <Route path="/recover" element={<RecoveryLogin />} />
+          <Route path="/migrate" element={<Migrate />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

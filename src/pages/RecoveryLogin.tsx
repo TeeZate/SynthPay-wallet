@@ -2,6 +2,15 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { walletApi } from '../lib/api'
+import { ArrowLeft, Mail, CheckCircle } from 'lucide-react'
+
+const T = {
+  amber: '#F59B00', amberPale: 'rgba(245,155,0,0.08)', amberBd: 'rgba(245,155,0,0.2)',
+  bg: '#FFFFFF', surface: '#FFFFFF', surface2: '#F3F1EE',
+  border: '#E8E4DF', border2: '#D4CFC9',
+  text1: '#0D0C0A', text2: '#4A4845', text3: '#9A958F', text4: '#C4BFB9',
+  green: '#059669', red: '#DC2626', navy: '#111827',
+}
 
 type Step = 'email' | 'otp' | 'success'
 
@@ -62,21 +71,30 @@ export default function RecoveryLogin() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#03030a',
+      background: T.bg,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px 20px',
+      fontFamily: "'DM Sans', system-ui, sans-serif",
     }}>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;900&family=DM+Mono:wght@300;400;500&display=swap');
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
 
       {/* Back button */}
       <div style={{ width: '100%', maxWidth: 360, marginBottom: 16 }}>
         <button
           onClick={() => navigate('/')}
-          style={{ background: 'none', border: 'none', color: '#64748b', fontSize: 14, cursor: 'pointer', padding: 0 }}>
-          ← Back to login
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: 'none', border: 'none', color: T.text3,
+            fontSize: 14, cursor: 'pointer', padding: 0,
+          }}>
+          <ArrowLeft size={16} />
+          Back to login
         </button>
       </div>
 
@@ -86,20 +104,22 @@ export default function RecoveryLogin() {
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{
             width: 64, height: 64, borderRadius: 18,
-            background: 'rgba(0,229,255,0.08)',
-            border: '1px solid rgba(0,229,255,0.15)',
+            background: T.amberPale,
+            border: `1px solid ${T.amberBd}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 16px', fontSize: 28,
+            margin: '0 auto 16px',
           }}>
-            {step === 'success' ? '✓' : '📧'}
+            {step === 'success'
+              ? <CheckCircle size={28} color={T.green} />
+              : <Mail size={28} color={T.amber} />}
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: '#e2e8f0', marginBottom: 8 }}>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: T.text1, marginBottom: 8 }}>
             {step === 'email'   && 'Access your wallet'}
             {step === 'otp'     && 'Enter your code'}
             {step === 'success' && 'Logged in!'}
           </h1>
-          <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>
-            {step === 'email'   && 'Enter the email linked to your wallet. We\'ll send a one-time code.'}
+          <p style={{ fontSize: 13, color: T.text3, lineHeight: 1.6 }}>
+            {step === 'email'   && "Enter the email linked to your wallet. We'll send a one-time code."}
             {step === 'otp'     && `We sent a 6-digit code to ${email}. It expires in 10 minutes.`}
             {step === 'success' && 'Redirecting to your wallet...'}
           </p>
@@ -108,7 +128,7 @@ export default function RecoveryLogin() {
         {/* Step: Email */}
         {step === 'email' && (
           <div>
-            <label style={{ display: 'block', fontSize: 11, color: '#64748b', letterSpacing: 2, fontFamily: 'monospace', marginBottom: 8 }}>
+            <label style={{ display: 'block', fontSize: 11, color: T.text3, letterSpacing: 2, fontFamily: "'DM Mono', monospace", marginBottom: 8 }}>
               YOUR EMAIL
             </label>
             <input
@@ -121,17 +141,18 @@ export default function RecoveryLogin() {
               style={{
                 width: '100%', padding: '14px 16px',
                 borderRadius: 12,
-                border: `1px solid ${email ? '#00e5ff44' : '#1a1a2e'}`,
-                background: '#0f0f1a', color: '#e2e8f0',
+                border: `1.5px solid ${email ? T.amber : T.border2}`,
+                background: T.surface2, color: T.text1,
                 fontSize: 15, outline: 'none',
                 boxSizing: 'border-box', marginBottom: 16,
                 transition: 'border-color 0.2s',
+                fontFamily: "'DM Sans', sans-serif",
               }}
             />
 
             {error && (
-              <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                <p style={{ fontSize: 13, color: '#ef4444' }}>{error}</p>
+              <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 8, background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.2)' }}>
+                <p style={{ fontSize: 13, color: T.red }}>{error}</p>
               </div>
             )}
 
@@ -141,22 +162,24 @@ export default function RecoveryLogin() {
               style={{
                 width: '100%', padding: '15px',
                 borderRadius: 12, border: 'none',
-                background: '#00e5ff', color: '#03030a',
+                background: T.amber, color: '#FFFFFF',
                 fontSize: 15, fontWeight: 700,
                 cursor: loading ? 'not-allowed' : 'pointer',
                 opacity: loading ? 0.6 : 1,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                boxShadow: '0 4px 14px rgba(245,155,0,0.3)',
+                fontFamily: "'DM Sans', sans-serif",
               }}>
               {loading ? (
-                <><div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid rgba(3,3,10,0.3)', borderTopColor: '#03030a', animation: 'spin 0.8s linear infinite' }} />Sending code...</>
-              ) : 'Send Login Code →'}
+                <><div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#FFFFFF', animation: 'spin 0.8s linear infinite' }} />Sending code...</>
+              ) : 'Send Login Code'}
             </button>
 
-            <div style={{ marginTop: 24, padding: '16px', borderRadius: 12, background: '#0f0f1a', border: '1px solid #1a1a2e' }}>
-              <p style={{ fontSize: 12, color: '#334155', marginBottom: 6 }}>
-                <span style={{ color: '#64748b' }}>Don't have an email linked yet?</span>
+            <div style={{ marginTop: 24, padding: '16px', borderRadius: 12, background: T.surface2, border: `1px solid ${T.border}` }}>
+              <p style={{ fontSize: 12, color: T.text3, marginBottom: 6 }}>
+                Don't have an email linked yet?
               </p>
-              <p style={{ fontSize: 12, color: '#334155', lineHeight: 1.6 }}>
+              <p style={{ fontSize: 12, color: T.text3, lineHeight: 1.6 }}>
                 Log in with your passkey on your original device, then go to Settings to link your email for cross-device access.
               </p>
             </div>
@@ -166,7 +189,7 @@ export default function RecoveryLogin() {
         {/* Step: OTP */}
         {step === 'otp' && (
           <div>
-            <label style={{ display: 'block', fontSize: 11, color: '#64748b', letterSpacing: 2, fontFamily: 'monospace', marginBottom: 8 }}>
+            <label style={{ display: 'block', fontSize: 11, color: T.text3, letterSpacing: 2, fontFamily: "'DM Mono', monospace", marginBottom: 8 }}>
               6-DIGIT CODE
             </label>
 
@@ -184,10 +207,11 @@ export default function RecoveryLogin() {
               style={{
                 width: '100%', padding: '18px 16px',
                 borderRadius: 12,
-                border: `1px solid ${otp.length === 6 ? '#00e5ff' : '#1a1a2e'}`,
-                background: '#0f0f1a', color: '#00e5ff',
+                border: `1.5px solid ${otp.length === 6 ? T.amber : T.border2}`,
+                background: T.surface2,
+                color: otp.length === 6 ? T.navy : T.text2,
                 fontSize: 32, fontWeight: 700,
-                fontFamily: 'monospace',
+                fontFamily: "'DM Mono', monospace",
                 textAlign: 'center',
                 letterSpacing: 12,
                 outline: 'none',
@@ -201,15 +225,15 @@ export default function RecoveryLogin() {
               {[0,1,2,3,4,5].map(i => (
                 <div key={i} style={{
                   width: 8, height: 8, borderRadius: '50%',
-                  background: i < otp.length ? '#00e5ff' : '#1a1a2e',
+                  background: i < otp.length ? T.amber : T.border2,
                   transition: 'background 0.15s',
                 }} />
               ))}
             </div>
 
             {error && (
-              <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                <p style={{ fontSize: 13, color: '#ef4444' }}>{error}</p>
+              <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 8, background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.2)' }}>
+                <p style={{ fontSize: 13, color: T.red }}>{error}</p>
               </div>
             )}
 
@@ -218,30 +242,32 @@ export default function RecoveryLogin() {
               disabled={loading || otp.length < 6}
               style={{
                 width: '100%', padding: '15px',
-                borderRadius: 12, border: 'none',
-                background: otp.length === 6 ? '#00e5ff' : '#0f0f1a',
-                color: otp.length === 6 ? '#03030a' : '#334155',
+                borderRadius: 12,
+                border: `1px solid ${otp.length === 6 ? 'transparent' : T.border}` as any,
+                background: otp.length === 6 ? T.amber : T.surface2,
+                color: otp.length === 6 ? '#FFFFFF' : T.text4,
                 fontSize: 15, fontWeight: 700,
                 cursor: loading || otp.length < 6 ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 transition: 'all 0.2s',
-                border: `1px solid ${otp.length === 6 ? 'transparent' : '#1a1a2e'}` as any,
+                boxShadow: otp.length === 6 ? '0 4px 14px rgba(245,155,0,0.3)' : 'none',
+                fontFamily: "'DM Sans', sans-serif",
               }}>
               {loading ? (
-                <><div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid rgba(3,3,10,0.3)', borderTopColor: '#03030a', animation: 'spin 0.8s linear infinite' }} />Verifying...</>
-              ) : 'Verify Code →'}
+                <><div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#FFFFFF', animation: 'spin 0.8s linear infinite' }} />Verifying...</>
+              ) : 'Verify Code'}
             </button>
 
             {/* Resend */}
             <div style={{ textAlign: 'center', marginTop: 20 }}>
               {resendIn > 0 ? (
-                <p style={{ fontSize: 13, color: '#334155' }}>
+                <p style={{ fontSize: 13, color: T.text3 }}>
                   Resend code in {resendIn}s
                 </p>
               ) : (
                 <button
                   onClick={() => { setOtp(''); setError(''); handleRequestOTP() }}
-                  style={{ background: 'none', border: 'none', color: '#00e5ff', fontSize: 13, cursor: 'pointer' }}>
+                  style={{ background: 'none', border: 'none', color: T.amber, fontSize: 13, cursor: 'pointer' }}>
                   Resend code
                 </button>
               )}
@@ -249,7 +275,12 @@ export default function RecoveryLogin() {
 
             <button
               onClick={() => { setStep('email'); setOtp(''); setError('') }}
-              style={{ width: '100%', marginTop: 12, padding: '12px', borderRadius: 12, border: '1px solid #1a1a2e', background: 'transparent', color: '#64748b', fontSize: 13, cursor: 'pointer' }}>
+              style={{
+                width: '100%', marginTop: 12, padding: '12px', borderRadius: 12,
+                border: `1px solid ${T.border}`, background: T.surface2,
+                color: T.text3, fontSize: 13, cursor: 'pointer',
+                fontFamily: "'DM Sans', sans-serif",
+              }}>
               Change email
             </button>
           </div>
@@ -260,17 +291,19 @@ export default function RecoveryLogin() {
           <div style={{ textAlign: 'center' }}>
             <div style={{
               width: 80, height: 80, borderRadius: '50%',
-              background: 'rgba(16,185,129,0.12)',
-              border: '2px solid rgba(16,185,129,0.3)',
+              background: 'rgba(5,150,105,0.08)',
+              border: '2px solid rgba(5,150,105,0.3)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 20px', fontSize: 36, color: '#10b981',
-            }}>✓</div>
-            <p style={{ fontSize: 15, color: '#10b981', fontWeight: 600 }}>Logged in successfully</p>
-            <p style={{ fontSize: 13, color: '#334155', marginTop: 8 }}>Redirecting to your wallet...</p>
+              margin: '0 auto 20px',
+            }}>
+              <CheckCircle size={36} color={T.green} />
+            </div>
+            <p style={{ fontSize: 15, color: T.green, fontWeight: 600 }}>Logged in successfully</p>
+            <p style={{ fontSize: 13, color: T.text3, marginTop: 8 }}>Redirecting to your wallet...</p>
           </div>
         )}
 
-        <p style={{ textAlign: 'center', fontSize: 11, color: '#1a1a2e', marginTop: 32, fontFamily: 'monospace' }}>
+        <p style={{ textAlign: 'center', fontSize: 11, color: T.text4, marginTop: 32, fontFamily: "'DM Mono', monospace" }}>
           synthpay.io · Cross-device access
         </p>
       </div>
