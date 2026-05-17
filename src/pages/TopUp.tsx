@@ -287,7 +287,7 @@ function CheckoutForm({ amount, onSuccess, onBack }: {
           background: T.amberPale, border: `1px solid ${T.amberBd}`,
           borderRadius: 10, padding: '8px 14px', marginBottom: 24,
         }}>
-          <span style={{ fontSize: 11, color: T.text3, fontFamily: "'DM Mono', monospace" }}>LOADING</span>
+          <span style={{ fontSize: 11, color: T.text3, fontFamily: "'DM Mono', monospace" }}>PAYING</span>
           <span style={{ fontSize: 16, fontWeight: 700, color: T.amber, fontFamily: "'DM Mono', monospace" }}>
             ${amount.toFixed(2)}
           </span>
