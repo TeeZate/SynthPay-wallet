@@ -65,5 +65,17 @@ export const walletApi = {
     api.post('/auth/migrate/complete', { token, credential }),
 
   pay: (data: { user_id: string; merchant_id: string; endpoint_id: string; amount: number }) =>
-    api.post('/users/pay', data)
+    api.post('/users/pay', data),
+
+  // ── Ziina (UAE) ───────────────────────────────────────────────────────────
+  createZiinaTopup: (user_id: string, amount_usd: number) =>
+    api.post('/wallet/topup/ziina', { user_id, amount_usd }),
+
+  // ── Nardo Pay (Africa) ────────────────────────────────────────────────────
+  createNardoTopup: (user_id: string, amount_usd: number, phone: string, currency: string) =>
+    api.post('/wallet/topup/nardo', { user_id, amount_usd, phone, currency }),
+
+  // ── Poll topup status (Ziina / Nardo) ─────────────────────────────────────
+  topupStatus: (ref: string) =>
+    api.get(`/wallet/topup/status/${ref}`),
 }
